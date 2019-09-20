@@ -10,6 +10,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@smallwei/avue": "^2.1.1",
     "core-js": "^2.6.5",
     "element-ui": "^2.12.0",
     "svg-sprite-loader": "^4.1.6",
@@ -45,7 +46,9 @@
       "plugin:vue/essential",
       "@vue/prettier"
     ],
-    "rules": {},
+    "rules": {
+      "no-console": "off"
+    },
     "parserOptions": {
       "parser": "babel-eslint"
     },
