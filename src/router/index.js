@@ -1,18 +1,15 @@
 import Vue from "vue";
 import Router from "vue-router";
-import main from "../views/main";
+import home from "../views/common/home";
 import { isURL } from "@/utils/validate";
 import menuList from "../../static/menu";
 
 Vue.use(Router);
-const _import = require("./import-" + process.env.NODE_ENV);
-
-const router = new Router({
-  mode: "history",
-  scrollBehavior: () => ({ y: 0 }),
-  isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
-  routes: globalRoutes.concat(mainRoutes)
-});
+const originalPush = Router.prototype.push;
+Router.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err);
+};
+const _import = require("./import-development");
 
 // 全局路由(无需嵌套上左右整体布局)
 const globalRoutes = [
@@ -21,30 +18,23 @@ const globalRoutes = [
     component: _import("common/404"),
     name: "404",
     meta: { title: "404未找到" }
-  },
-  {
-    path: "/login",
-    component: _import("common/login"),
-    name: "login",
-    meta: { title: "登录" }
   }
 ];
-
 const mainRoutes = [
   {
     path: "/",
-    name: "main",
-    component: main,
-    children: [
-      {
-        path: "/prodInfo",
-        component: _import("modules/table/tableInit"),
-        name: "prodInfo",
-        meta: { title: "表格初始化" }
-      }
-    ]
+    name: "home",
+    component: home,
+    children: []
   }
 ];
+
+const router = new Router({
+  mode: "history",
+  scrollBehavior: () => ({ y: 0 }),
+  isAddDynamicMenuRoutes: false, // 是否已经添加动态(菜单)路由
+  routes: globalRoutes.concat(mainRoutes)
+});
 
 /**
  * 添加动态(菜单)路由
@@ -52,7 +42,6 @@ const mainRoutes = [
  * @param {*} routes 递归创建的动态(菜单)路由
  */
 function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
-  console.log("------", menuList);
   var temp = [];
   for (var i = 0; i < menuList.length; i++) {
     if (menuList[i].list && menuList[i].list.length >= 1) {
@@ -60,7 +49,7 @@ function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
     } else if (menuList[i].url && /\S/.test(menuList[i].url)) {
       menuList[i].url = menuList[i].url.replace(/^\//, "");
       var route = {
-        path: menuList[i].url.replace("/", "-"),
+        path: "/" + menuList[i].url.replace("/", "-"),
         component: null,
         name: menuList[i].url.replace("/", "-"),
         meta: {
@@ -88,6 +77,13 @@ function fnAddDynamicMenuRoutes(menuList = [], routes = []) {
   }
   if (temp.length >= 1) {
     fnAddDynamicMenuRoutes(temp, routes);
+  } else {
+    mainRoutes.children = routes;
+    router.addRoutes(routes);
+    sessionStorage.setItem(
+      "dynamicMenuRoutes",
+      JSON.stringify(mainRoutes.children || "[]")
+    );
   }
 }
 
@@ -120,7 +116,9 @@ router.beforeEach((to, from, next) => {
   ) {
     next();
   } else {
+    sessionStorage.setItem("menuList", JSON.stringify(menuList || "[]"));
     fnAddDynamicMenuRoutes(menuList);
+    router.options.isAddDynamicMenuRoutes = true;
     next({ ...to, replace: true });
   }
 });

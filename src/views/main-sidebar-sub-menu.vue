@@ -59,7 +59,7 @@ export default {
         item => item.meta.menuId === menu.menuId
       );
       if (route.length >= 1) {
-        this.$router.push({ name: route[0].name });
+        this.$router.push({ path: route[0].path });
       }
     }
   }

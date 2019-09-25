@@ -1,6 +1,6 @@
 <template>
   <svg :class="getClassName" :width="width" :height="height" aria-hidden="true">
-    <use xlink:href="#icon-zhedie"></use>
+    <use :xlink:href="getName"></use>
   </svg>
 </template>
 

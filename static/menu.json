@@ -1,25 +1,39 @@
-{
-	"menuList": [{
+[
+	{
 		"menuId": 34,
 		"parentId": 0,
 		"parentName": null,
-		"name": "表格案例",
+		"name": "表格主键",
 		"url": "",
 		"perms": "",
 		"type": 0,
-		"icon": "admin",
+		"icon": "table",
 		"orderNum": 0,
-		"list": [{
-			"menuId": 70,
-			"parentId": 34,
-			"parentName": null,
-			"name": "表格初始化",
-			"url": "table/tableInit",
-			"perms": "",
-			"type": 1,
-			"icon": null,
-			"orderNum": 0,
-			"list": null
-		}]
-	}]
-}
+		"list": [
+			{
+				"menuId": 70,
+				"parentId": 34,
+				"parentName": null,
+				"name": "基础",
+				"url": "table/tableInit",
+				"perms": "",
+				"type": 1,
+				"icon": null,
+				"orderNum": 0,
+				"list": null
+			},
+			{
+				"menuId": 71,
+				"parentId": 34,
+				"parentName": null,
+				"name": "分页",
+				"url": "table/tablePage",
+				"perms": "",
+				"type": 1,
+				"icon": null,
+				"orderNum": 0,
+				"list": null
+			}
+		]
+	}
+]

@@ -7,7 +7,7 @@
         :collapseTransition="false"
         class="site-sidebar__menu"
       >
-        <el-menu-item index="home" @click="$router.push({ name: 'home' })">
+        <el-menu-item index="home" @click="$router.push({ path: '/' })">
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
           <span slot="title">首页</span>
         </el-menu-item>
@@ -88,6 +88,7 @@ export default {
       sessionStorage.getItem("dynamicMenuRoutes") || "[]"
     );
     this.routeHandle(this.$route);
+    console.log("dynamicMenuRoutes", this.dynamicMenuRoutes);
   },
   methods: {
     // 路由操作
@@ -116,6 +117,7 @@ export default {
         this.menuActiveName = tab.menuId + "";
         this.mainTabsActiveName = tab.name;
       }
+      console.log(this.mainTabsActiveName);
     }
   }
 };

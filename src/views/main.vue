@@ -24,6 +24,7 @@ import MainSidebar from "./main-sidebar";
 import MainContent from "./main-content";
 
 export default {
+  name: "main-index",
   data() {
     return {
       loading: true
