@@ -33,16 +33,18 @@
         :label="item.title"
         :name="item.name"
       >
-        <el-card>
-          <transition name="fade">
-            <router-view :key="key" v-show="show"></router-view>
-          </transition>
-        </el-card>
       </el-tab-pane>
+      <el-card>
+        <transition name="fade">
+          <keep-alive>
+            <router-view :key="key" v-show="show"></router-view>
+          </keep-alive>
+        </transition>
+      </el-card>
     </el-tabs>
     <el-card v-else>
       <transition name="fade">
-        <router-view :key="key"></router-view>
+        <router-view :key="key" v-show="show"></router-view>
       </transition>
     </el-card>
   </main>
@@ -63,7 +65,6 @@ export default {
     },
     mainTabsActiveName: {
       get() {
-        console.log(this.$store.state.common.mainTabsActiveName);
         return this.$store.state.common.mainTabsActiveName;
       },
       set(val) {
@@ -111,7 +112,6 @@ export default {
     // 选择标签页
     selectedTabHandle(tab) {
       tab = this.mainTabs.filter(item => item.name === tab.name);
-      console.log(tab);
       if (tab.length >= 1) {
         this.$router.push({ path: "/" + tab[0].name });
       }

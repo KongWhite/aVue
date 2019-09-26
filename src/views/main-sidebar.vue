@@ -88,7 +88,6 @@ export default {
       sessionStorage.getItem("dynamicMenuRoutes") || "[]"
     );
     this.routeHandle(this.$route);
-    console.log("dynamicMenuRoutes", this.dynamicMenuRoutes);
   },
   methods: {
     // 路由操作
@@ -117,7 +116,6 @@ export default {
         this.menuActiveName = tab.menuId + "";
         this.mainTabsActiveName = tab.name;
       }
-      console.log(this.mainTabsActiveName);
     }
   }
 };

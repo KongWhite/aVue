@@ -13,9 +13,16 @@ import "@/icons/index";
 import Avue from "@smallwei/avue";
 import "@smallwei/avue/lib/index.css";
 
+import http from "@/utils/httpRequest";
+
+import VueCookie from "vue-cookies";
+//import http from "axios";
+
 Vue.use(Avue);
 Vue.use(ElementUI);
+Vue.use(VueCookie);
 Vue.config.productionTip = false;
+Vue.prototype.$http = http;
 
 new Vue({
   router,

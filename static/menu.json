@@ -33,6 +33,18 @@
 				"icon": null,
 				"orderNum": 0,
 				"list": null
+			},
+			{
+				"menuId": 72,
+				"parentId": 34,
+				"parentName": null,
+				"name": "错误",
+				"url": "table/error",
+				"perms": "",
+				"type": 1,
+				"icon": null,
+				"orderNum": 0,
+				"list": null
 			}
 		]
 	}
