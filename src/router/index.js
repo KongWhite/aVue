@@ -18,6 +18,12 @@ const globalRoutes = [
     component: _import("common/404"),
     name: "404",
     meta: { title: "404未找到" }
+  },
+  {
+    path: "/productInfo",
+    component: _import("modules/product/productInfo"),
+    name: "productInfo",
+    meta: { title: "商品详情" }
   }
 ];
 const mainRoutes = [

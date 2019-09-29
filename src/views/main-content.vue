@@ -1,7 +1,10 @@
 <template>
   <main
     class="site-content"
-    :class="{ 'site-content--tabs': $route.meta.isTab }"
+    :class="{
+      'site-content--tabs': $route.meta.isTab,
+      'min-width': $route.meta.isTab
+    }"
   >
     <el-tabs
       v-if="$route.meta.isTab"
@@ -34,7 +37,7 @@
         :name="item.name"
       >
       </el-tab-pane>
-      <el-card>
+      <el-card style="min-height:800px;">
         <transition name="fade">
           <keep-alive>
             <router-view :key="key" v-show="show"></router-view>
@@ -42,7 +45,7 @@
         </transition>
       </el-card>
     </el-tabs>
-    <el-card v-else>
+    <el-card style="min-height:800px;" v-else>
       <transition name="fade">
         <router-view :key="key" v-show="show"></router-view>
       </transition>

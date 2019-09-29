@@ -11,6 +11,19 @@
         <el-tag v-if="scope.row.status === 1" size="small">上架</el-tag>
         <el-tag v-else size="small">未上架</el-tag>
       </template>
+      <template slot="menuLeft">
+        <el-button
+          type="primary"
+          icon="el-icon-plus"
+          size="small"
+          @click="addOrUpdateHandle()"
+        >
+          新增
+        </el-button>
+        <el-button type="danger" @click="deleteHandle()" size="small">
+          批量删除
+        </el-button>
+      </template>
     </avue-crud>
   </div>
 </template>
@@ -34,6 +47,7 @@ export default {
         border: true,
         cancelBtn: true,
         delBtn: false,
+        editBtn: false,
         align: "center",
         menuAlign: "center",
         column: [
@@ -51,13 +65,15 @@ export default {
           },
           {
             label: "商品类别",
-            prop: "brief",
+            prop: "category_id",
             search: true,
             searchSpan: 4
           },
           {
             label: "商品图片",
-            prop: "pic"
+            prop: "pic",
+            type: "upload",
+            listType: "picture-img"
           },
           {
             label: "商品价格",
@@ -111,7 +127,7 @@ export default {
       var newObj = { ...page, ...params };
       this.$http({
         url: this.$http.adornUrl(`/product/list`),
-        methods: "get",
+        method: "get",
         params: this.$http.adornParams(newObj)
       }).then(res => {
         let result = res.data;
@@ -128,6 +144,9 @@ export default {
       this.page.pageSize = Number(page.pageSize);
       this.page.pageNum = page.currentPage;
       this.getDataList(this.params1, this.page);
+    },
+    addOrUpdateHandle() {
+      this.$router.push("/productInfo");
     }
   }
 };

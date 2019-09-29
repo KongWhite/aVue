@@ -16,13 +16,15 @@ import "@smallwei/avue/lib/index.css";
 import http from "@/utils/httpRequest";
 
 import VueCookie from "vue-cookies";
-//import http from "axios";
+
+import moment from "moment";
 
 Vue.use(Avue);
 Vue.use(ElementUI);
 Vue.use(VueCookie);
 Vue.config.productionTip = false;
 Vue.prototype.$http = http;
+Vue.prototype.$moment = moment;
 
 new Vue({
   router,
