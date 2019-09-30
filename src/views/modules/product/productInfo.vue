@@ -1,6 +1,10 @@
 <template>
   <div>
-    <el-page-header @back="goBack" content="商品新增"></el-page-header>
+    <el-page-header
+      @back="goBack"
+      :content="$route.query.id ? titleEdit : titleAdd"
+    >
+    </el-page-header>
     <el-form
       :model="form"
       ref="form"
@@ -35,8 +39,8 @@
       </el-form-item>
       <el-form-item label="商品分类" prop="category_id">
         <el-select placeholder="商品分类" v-model="form.category_id">
-          <el-option label="食品" value="001"></el-option>
-          <el-option label="电器" value="002"></el-option>
+          <el-option label="食品" value="1"></el-option>
+          <el-option label="手机" value="2"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="商品价格" prop="ori_price">
@@ -48,9 +52,11 @@
       <el-form-item label="创建时间">
         <el-input v-model="form.create_time" disabled></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item style="text-align:center;">
         <el-button type="primary" @click="submitForm('form')">提交</el-button>
-        <el-button @click="resetForm('form')">重置</el-button>
+        <el-button v-if="!this.$route.query.id" @click="resetForm('form')">
+          重置
+        </el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -59,12 +65,14 @@
 export default {
   data() {
     return {
+      titleAdd: "商品新增",
+      titleEdit: "商品编辑",
       imageUrl: "",
       uploadUrl: window.SITE_CONFIG.baseUrl + "/upload/imgUpload",
       form: {
         status: "1",
         create_time: this.$moment(new Date()).format("YYYY-MM-DD"),
-        category_id: "001",
+        category_id: "1",
         pic: "",
         prod_id: this.$moment(new Date()).format("YYYYMMDDmmss"),
         prod_name: "",
@@ -116,7 +124,31 @@ export default {
       }
     };
   },
+  mounted() {
+    if (this.$route.query.id) {
+      this.productData();
+    }
+  },
   methods: {
+    productData() {
+      let id = this.$route.query.id;
+      var newObj = { prod_id: id };
+      this.$http({
+        url: this.$http.adornUrl(`/prod/findByProd `),
+        method: "get",
+        params: this.$http.adornParams(newObj)
+      }).then(res => {
+        let result = res.data;
+        if (result.code == "0") {
+          console.log(result);
+          this.form = result.data;
+          this.imageUrl = result.data.pic;
+          this.form.create_time = this.$moment(this.form.create_time).format(
+            "YYYY-MM-DD"
+          );
+        }
+      });
+    },
     beforeAvatarUpload(file) {
       console.log(file);
       const isJPG = file.type === "image/png" || file.type === "image/jpeg";
@@ -142,7 +174,7 @@ export default {
       console.log(formName);
       this.$refs[formName].validate(valid => {
         if (valid) {
-          this.productAdd();
+          this.$route.query.id ? this.productEdit() : this.productAdd();
         } else {
           return false;
         }
@@ -153,7 +185,7 @@ export default {
     },
     productAdd() {
       this.$http({
-        url: this.$http.adornUrl(`/product/add`),
+        url: this.$http.adornUrl(`/prod/saveByProduct`),
         method: "post",
         data: this.$http.adornData(this.form)
       }).then(res => {
@@ -163,6 +195,23 @@ export default {
           setTimeout(() => {
             this.goBack();
           }, 3000);
+        } else {
+          this.$message.error(result.msg);
+        }
+      });
+    },
+    productEdit() {
+      this.$http({
+        url: this.$http.adornUrl(`/prod/updateByproduct`),
+        method: "post",
+        data: this.$http.adornData(this.form)
+      }).then(res => {
+        let result = res.data;
+        if (result.code === "0") {
+          this.$message.success(result.msg);
+          setTimeout(() => {
+            this.goBack();
+          }, 1000);
         } else {
           this.$message.error(result.msg);
         }

@@ -6,10 +6,15 @@
       :page="page"
       @search-change="changeSearch"
       @on-load="changePage"
+      @selection-change="selectionChange"
     >
       <template slot-scope="scope" slot="status">
-        <el-tag v-if="scope.row.status === 1" size="small">上架</el-tag>
+        <el-tag v-if="scope.row.status === '1'" size="small">上架</el-tag>
         <el-tag v-else size="small">未上架</el-tag>
+      </template>
+      <template slot-scope="scope" slot="category_id">
+        <el-tag v-if="scope.row.category_id === '1'" size="small">食品</el-tag>
+        <el-tag v-else size="small">手机</el-tag>
       </template>
       <template slot="menuLeft">
         <el-button
@@ -20,8 +25,30 @@
         >
           新增
         </el-button>
-        <el-button type="danger" @click="deleteHandle()" size="small">
+        <el-button
+          type="danger"
+          @click="deleteHandle(idArr, false)"
+          size="small"
+        >
           批量删除
+        </el-button>
+      </template>
+      <template slot-scope="scope" slot="menu">
+        <el-button
+          type="primary"
+          icon="el-icon-edit"
+          size="small"
+          @click="editOrUpdateHandle(scope.row.prod_id)"
+        >
+          修改
+        </el-button>
+        <el-button
+          type="danger"
+          icon="el-icon-delete"
+          size="small"
+          @click="deleteHandle(scope.row.prod_id, true)"
+        >
+          删除
         </el-button>
       </template>
     </avue-crud>
@@ -67,7 +94,18 @@ export default {
             label: "商品类别",
             prop: "category_id",
             search: true,
-            searchSpan: 4
+            type: "select",
+            searchSpan: 4,
+            dicData: [
+              {
+                label: "食品",
+                value: "1"
+              },
+              {
+                label: "手机",
+                value: "2"
+              }
+            ]
           },
           {
             label: "商品图片",
@@ -98,11 +136,11 @@ export default {
             dicData: [
               {
                 label: "未上架",
-                value: 0
+                value: "0"
               },
               {
                 label: "上架",
-                value: 1
+                value: "1"
               }
             ],
             searchSpan: 4
@@ -114,7 +152,8 @@ export default {
         pageSize: 20,
         total: 0
       },
-      params1: {}
+      params1: {},
+      idArr: []
     };
   },
   methods: {
@@ -126,7 +165,7 @@ export default {
     getDataList(params, page) {
       var newObj = { ...page, ...params };
       this.$http({
-        url: this.$http.adornUrl(`/product/list`),
+        url: this.$http.adornUrl(`/prod/list`),
         method: "get",
         params: this.$http.adornParams(newObj)
       }).then(res => {
@@ -147,6 +186,44 @@ export default {
     },
     addOrUpdateHandle() {
       this.$router.push("/productInfo");
+    },
+    editOrUpdateHandle(id) {
+      this.$router.push({
+        path: "/productInfo",
+        query: {
+          id: id
+        }
+      });
+    },
+    selectionChange(list) {
+      this.idArr = [];
+      for (let item of list) {
+        this.idArr.push(item.prod_id);
+      }
+      console.log(this.idArr);
+    },
+    deleteHandle(id, type) {
+      let arr = [];
+      if (type) {
+        arr.push(id);
+      } else {
+        arr = this.idArr;
+      }
+      this.$http({
+        url: this.$http.adornUrl(`/prod/deleteByProduct`),
+        method: "post",
+        data: this.$http.adornData({
+          prodIds: arr
+        })
+      }).then(res => {
+        let result = res.data;
+        if (result.code === "0") {
+          this.$message.success(result.msg);
+          this.changeSearch(this.params1);
+        } else {
+          this.$message.error(result.msg);
+        }
+      });
     }
   }
 };
