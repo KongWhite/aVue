@@ -4,6 +4,7 @@
       :data="data"
       :option="option"
       :page="page"
+      v-loading="load"
       @search-change="changeSearch"
       @on-load="changePage"
       @selection-change="selectionChange"
@@ -58,6 +59,7 @@
 export default {
   data() {
     return {
+      load: true,
       searchForm: {},
       data: [],
       option: {
@@ -163,6 +165,7 @@ export default {
       this.getDataList(params, this.page);
     },
     getDataList(params, page) {
+      this.load = true;
       var newObj = { ...page, ...params };
       this.$http({
         url: this.$http.adornUrl(`/prod/list`),
@@ -170,6 +173,7 @@ export default {
         params: this.$http.adornParams(newObj)
       }).then(res => {
         let result = res.data;
+        this.load = false;
         if (result.code == "0") {
           this.data = result.data.list;
           this.page.pageSize = Number(result.data.pageSize);

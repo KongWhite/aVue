@@ -12,6 +12,7 @@
       :rules="rules"
       class="demo-ruleForm"
       style="margin-top: 20px;"
+      v-loading="load"
     >
       <el-form-item label="商品图片" prop="pic">
         <el-upload
@@ -53,7 +54,13 @@
         <el-input v-model="form.create_time" disabled></el-input>
       </el-form-item>
       <el-form-item style="text-align:center;">
-        <el-button type="primary" @click="submitForm('form')">提交</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm('form')"
+          :disabled="isSubmit"
+        >
+          提交
+        </el-button>
         <el-button v-if="!this.$route.query.id" @click="resetForm('form')">
           重置
         </el-button>
@@ -65,6 +72,8 @@
 export default {
   data() {
     return {
+      load: false,
+      isSubmit: false,
       titleAdd: "商品新增",
       titleEdit: "商品编辑",
       imageUrl: "",
@@ -131,14 +140,16 @@ export default {
   },
   methods: {
     productData() {
+      this.load = true;
       let id = this.$route.query.id;
       var newObj = { prod_id: id };
       this.$http({
-        url: this.$http.adornUrl(`/prod/findByProd `),
+        url: this.$http.adornUrl(`/prod/findByProd`),
         method: "get",
         params: this.$http.adornParams(newObj)
       }).then(res => {
         let result = res.data;
+        this.load = false;
         if (result.code == "0") {
           console.log(result);
           this.form = result.data;
@@ -184,29 +195,35 @@ export default {
       this.$refs[formName].resetFields();
     },
     productAdd() {
+      this.load = true;
+      this.isSubmit = true;
       this.$http({
         url: this.$http.adornUrl(`/prod/saveByProduct`),
         method: "post",
         data: this.$http.adornData(this.form)
       }).then(res => {
         let result = res.data;
+        this.load = false;
+        this.isSubmit = false;
         if (result.code === "0") {
           this.$message.success(result.msg);
-          setTimeout(() => {
-            this.goBack();
-          }, 3000);
+          this.goBack();
         } else {
           this.$message.error(result.msg);
         }
       });
     },
     productEdit() {
+      this.load = true;
+      this.isSubmit = true;
       this.$http({
         url: this.$http.adornUrl(`/prod/updateByproduct`),
         method: "post",
         data: this.$http.adornData(this.form)
       }).then(res => {
         let result = res.data;
+        this.load = false;
+        this.isSubmit = false;
         if (result.code === "0") {
           this.$message.success(result.msg);
           setTimeout(() => {

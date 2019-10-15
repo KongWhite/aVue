@@ -11,11 +11,11 @@
 		"orderNum": 0,
 		"list": [
 			{
-				"menuId": 70,
+				"menuId": 71,
 				"parentId": 34,
 				"parentName": null,
-				"name": "商品列表",
-				"url": "product/productList",
+				"name": "商品分类",
+				"url": "product/productCategory",
 				"perms": "",
 				"type": 1,
 				"icon": null,
@@ -23,11 +23,11 @@
 				"list": null
 			},
 			{
-				"menuId": 71,
+				"menuId": 70,
 				"parentId": 34,
 				"parentName": null,
-				"name": "分页",
-				"url": "product/tablePage",
+				"name": "商品列表",
+				"url": "product/productList",
 				"perms": "",
 				"type": 1,
 				"icon": null,
